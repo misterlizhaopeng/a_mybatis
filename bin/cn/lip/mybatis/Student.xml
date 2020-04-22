@@ -37,9 +37,9 @@
 		<!-- 定义关联对象的封装规则
 				property:指定javabean的级联的属性
 				select :指定的方法查出的结果
-				column:指定将哪一列的值(不是javabean的值)传给这个方法 
+				column:指定将哪一列的值(不是javabean的值)传给select指定的这个方法 
 				流程：使用select指定的方法（传入column指定的这列参数的值）查出对象，并封装给property指定的属性-->
-		<association property="deptInfo" select="cn.lip.mybatis.dao.IDeptInfoMapper.getDeptInfo" column="bccc"></association>
+		<association property="deptInfo" select="cn.lip.mybatis.dao.IDeptInfoMapper.getDeptInfo" column="bccc"/>
 	</resultMap>
 	<!--public StudentSecond getStudentByStep(int id);stuDis(鉴别器) getByStep -->
 	 <select id="getStudentByStep" databaseId="mysql" resultMap="getByStep">
@@ -64,23 +64,21 @@
 		<!-- property:指定javabean的级联的属性，javaType:为指定的javabean类型的全名 -->
 		<association property="deptInfo" javaType="cn.lip.mybatis.bean.DeptInfo" >
 			<!--定义主键  -->
-			<id column="id" property="id"/>
+			<id column="deptId" property="id"/>
 			<result column="deptName" property="deptName"/>
 		</association>
 		
 	</resultMap>
 	<!-- public StudentSecond getCascResult(Integer id); -->
-	<select id="getCascResult" databaseId="mysql" resultMap="cascFirst2" >
+	<select id="getCascResult" databaseId="mysql" resultMap="cascFirst" >
 		select a.id,a.name,a.age,b.id deptId,b.deptName from 
 		student a  left join tab_dept b on a.deptid =b.id 
-		where a.id=#{id};
+		where a.id=#{id}
 	</select>
 	<!--resultMap 级联属性、association嵌套查询 end  -->
 	
 	<resultMap type="stus" id="firstResultMap">
-		<!--定义主键  ：用id节点定义;
-			column为db的字段名称，
-				property为javabean的属性名称-->
+		<!--定义主键  ：用id节点定义;column为db的字段名称，property为javabean的属性名称-->
 		<id column="id" property="id"/>
 		<!-- result 可以不写，mybatis可以自动把javabean和数据库字段默认进行匹配
 				为了更能针对性的查找问题，建议写出来
@@ -95,9 +93,6 @@
 	<select id="getBeanByResultMapMethod"  databaseId="mysql" resultMap="firstResultMap">
 		select * from student where id=#{id} 
 	</select>
-	<!--resultMap end-->
-
-
 
 	
 	<!-- 注意：resultType为map（列名为key，值为value），可以知道在mybatis中map是一个别名     where id = #{id} -->

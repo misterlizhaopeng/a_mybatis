@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import cn.lip.mybatis.bean.DeptInfo;
 import cn.lip.mybatis.bean.Student;
+import cn.lip.mybatis.bean.StudentSecond;
 import cn.lip.mybatis.dao.IDeptInfoMapper;
 import cn.lip.mybatis.dao.IStudentAnnotation;
 import cn.lip.mybatis.dao.IStudentMapper;
@@ -150,31 +151,36 @@ public class Test01 {
 	}
 
 	@Test
+	public void selectByStep() throws IOException {
+		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		IStudentMapper mapper = sqlSession .getMapper(IStudentMapper.class);
+		StudentSecond studentByStep = mapper.getStudentByStep(2);
+		
+		System.err.println(studentByStep.getName()+"\r\n");
+		System.err.println(studentByStep.getDeptInfo());
+		
+//		System.err.println(studentByStep);
+		sqlSession.close();
+	}
+
+	@Test
 	public void selectCasResult() throws IOException {
 		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
 		SqlSession openSession = sqlSessionFactory.openSession();
 		IStudentMapper mapper = openSession.getMapper(IStudentMapper.class);
 
-		// StudentSecond cascResult = mapper.getCascResult(2);
-		// System.out.println(cascResult);
-		// System.out.println(cascResult.getDeptInfo());
-
-		// StudentSecond studentByStep = mapper.getStudentByStep(1);
-		// System.err.println(studentByStep.getName()+"\r\n");
-		// System.err.println(studentByStep.getDeptInfo());
-
-		// System.err.println(studentByStep);
-		// System.err.println(studentByStep.getDeptInfo());
+		StudentSecond cascResult = mapper.getCascResult(2);
+		System.out.println(cascResult);
+		System.out.println(cascResult.getDeptInfo());
 
 		IDeptInfoMapper mapper2 = openSession.getMapper(IDeptInfoMapper.class);
 		DeptInfo deptStudent = mapper2.getDeptStudent(3);
 		System.err.println(deptStudent);
-		// System.err.println(deptStudent.getStudents());
 
 		IDeptInfoMapper mapper3 = openSession.getMapper(IDeptInfoMapper.class);
 		DeptInfo deptStudentByStep = mapper3.getDeptStudentByStep(3);
 		System.err.println(deptStudentByStep);
-		// System.err.println(deptStudentByStep.getStudents());
 		openSession.close();
 	}
 }

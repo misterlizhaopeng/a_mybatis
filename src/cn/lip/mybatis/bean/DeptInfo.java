@@ -1,8 +1,9 @@
 package cn.lip.mybatis.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class DeptInfo {
+public class DeptInfo implements Serializable{
 	private int id;
 	private String deptName;
 	private List<Student> students;

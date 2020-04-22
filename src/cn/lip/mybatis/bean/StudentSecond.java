@@ -1,6 +1,8 @@
 package cn.lip.mybatis.bean;
 
-public class StudentSecond {
+import java.io.Serializable;
+
+public class StudentSecond implements Serializable {
 	private int id;
 	private String name;
 	private int age;
