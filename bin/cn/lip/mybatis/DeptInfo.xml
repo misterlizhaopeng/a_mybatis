@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="cn.lip.mybatis.dao.IDeptInfoMapper">
+  
+  <!-- 分步查询 start   -->
+  		<resultMap type="cn.lip.mybatis.bean.DeptInfo" id="deptStuByStep">
+  			<id column="id" property="id"/>
+  			<result column="deptName" property="deptName"/>
+			<collection property="students" select="cn.lip.mybatis.dao.IStudentMapper.getStudentDeptByStep"
+			 column="{deptId=id}" fetchType="eager"></collection>
+  		</resultMap>
+  		
+  		<select id="getDeptStudentByStep" resultMap="deptStuByStep" databaseId="mysql" statementType="STATEMENT">
+  			select id,deptName from tab_dept where id=#{id}
+  		</select>
+  		<!-- 扩展：多列的值传递过去：可以将多列的值封装map传递
+				column="{key1=column1,key2=column2}"
+				fetchType="lazy"：表示使用延迟加载；
+						- lazy：延迟
+						- eager：立即
+		 -->
+  <!-- 分步查询 end    -->
+  	
+  
+  
+  <!-- 	public DeptInfo getDeptStudent(int id);
+  		查询部门，以及部门下的素有学生的集合
+  		private String deptName;
+  		嵌套结果集的方式，使用collection标签定义关联的集合类型的属性封装规则
+  	 -->
+  	 <resultMap type="cn.lip.mybatis.bean.DeptInfo" id="DeptStudents">
+  	 	<id  column="id" property="id"/>
+  	 	<result column="deptName" property="deptName"/>
+  	 	<!--  
+  	 		collection定义关联集合类型的属性的封装规则 
+			ofType:指定集合里面元素的类型，也可以是别名
+  	 	-->
+  	 	<collection property="students" ofType="cn.lip.mybatis.bean.Student">
+  	 		<id column="sid" property="id"/>
+  	 		<result column="name" property="name"/>
+  	 		<result column="age" property="age"/>
+  	 	</collection>
+  	 </resultMap>
+	  <select id="getDeptStudent" databaseId="mysql" resultMap="DeptStudents">
+		  	select a.id,a.deptname deptName,b.id sid,b.name,b.age
+			from tab_dept a left join student b 
+			on a.id=b.deptid where a.id=#{id} 
+	  </select>
+  
+  
+  <!-- public DeptInfo getDeptInfo(int id); -->
+  	<select id="getDeptInfo" resultType="cn.lip.mybatis.bean.DeptInfo" databaseId="mysql">
+  		select id,deptName from tab_dept where id=#{id}
+  	</select>
+  </mapper>

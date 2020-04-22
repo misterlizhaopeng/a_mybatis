@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- <mapper namespace="cn.lip.mybatis.bean.Studentzz"> -->
+<mapper namespace="cn.lip.mybatis.dao.IStudentMapper">
+<cache  eviction="LRU" flushInterval="60000" readOnly="false" size="1024"></cache>
+
+	<!-- 鉴别器 start -->
+	<resultMap type="cn.lip.mybatis.bean.StudentSecond" id="stuDis">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="age" property="age"/>
+		<!--
+	 		column：指定判定的列名,而是具体的sql对应的列
+	 		javaType：列值对应的java类型  -->
+		 <discriminator javaType="string" column="age">
+		 	<case value="300" resultType="cn.lip.mybatis.bean.StudentSecond">
+		 		<association property="deptInfo" select="cn.lip.mybatis.dao.IDeptInfoMapper.getDeptInfo"
+		 		column="bccc" ></association>
+		 	</case>
+		 </discriminator>
+	</resultMap>
+	<!-- 鉴别器 end-->
+
+	<!--public StudentSecond getStudentDeptByStep(int deptId);  -->
+	<select id="getStudentDeptByStep" resultType="cn.lip.mybatis.bean.StudentSecond" databaseId="mysql">
+		select id,name,age from student where deptId=#{deptId}
+	</select>
+
+<!--resultMap 分步查询  start  -->
+	<resultMap type="cn.lip.mybatis.bean.StudentSecond" id="getByStep">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="age" property="age"/>
+		<result column="bccc" property="deptId"/>
+		<!-- 定义关联对象的封装规则
+				property:指定javabean的级联的属性
+				select :指定的方法查出的结果
+				column:指定将哪一列的值(不是javabean的值)传给这个方法 
+				流程：使用select指定的方法（传入column指定的这列参数的值）查出对象，并封装给property指定的属性-->
+		<association property="deptInfo" select="cn.lip.mybatis.dao.IDeptInfoMapper.getDeptInfo" column="bccc"></association>
+	</resultMap>
+	<!--public StudentSecond getStudentByStep(int id);stuDis(鉴别器) getByStep -->
+	 <select id="getStudentByStep" databaseId="mysql" resultMap="getByStep">
+	 	select id,name,age,deptid as bccc from student where id=#{id}
+	 </select>
+<!--resultMap 分步查询  end-->
+
+<!--resultMap 级联属性、association嵌套查询  start  -->
+	<resultMap type="cn.lip.mybatis.bean.StudentSecond" id="cascFirst">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="age" property="age"/>
+		
+		<result column="deptId" property="deptInfo.id"/>
+		<result column="deptName" property="deptInfo.deptName"/>
+	</resultMap>
+	<resultMap type="cn.lip.mybatis.bean.StudentSecond" id="cascFirst2">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="age" property="age"/>
+		
+		<!-- property:指定javabean的级联的属性，javaType:为指定的javabean类型的全名 -->
+		<association property="deptInfo" javaType="cn.lip.mybatis.bean.DeptInfo" >
+			<!--定义主键  -->
+			<id column="id" property="id"/>
+			<result column="deptName" property="deptName"/>
+		</association>
+		
+	</resultMap>
+	<!-- public StudentSecond getCascResult(Integer id); -->
+	<select id="getCascResult" databaseId="mysql" resultMap="cascFirst2" >
+		select a.id,a.name,a.age,b.id deptId,b.deptName from 
+		student a  left join tab_dept b on a.deptid =b.id 
+		where a.id=#{id};
+	</select>
+	<!--resultMap 级联属性、association嵌套查询 end  -->
+	
+	<resultMap type="stus" id="firstResultMap">
+		<!--定义主键  ：用id节点定义;
+			column为db的字段名称，
+				property为javabean的属性名称-->
+		<id column="id" property="id"/>
+		<!-- result 可以不写，mybatis可以自动把javabean和数据库字段默认进行匹配
+				为了更能针对性的查找问题，建议写出来
+		-->
+	  	<result column="name" property="name"/>
+		<result column="age" property="age"/>  
+	</resultMap>
+
+
+
+	<!--public Student getBeanByResultMapMethod(int id); -->
+	<select id="getBeanByResultMapMethod"  databaseId="mysql" resultMap="firstResultMap">
+		select * from student where id=#{id} 
+	</select>
+	<!--resultMap end-->
+
+
+
+	
+	<!-- 注意：resultType为map（列名为key，值为value），可以知道在mybatis中map是一个别名     where id = #{id} -->
+	<!-- public List<Map<String,Object>> getStudentMapList(int id); -->
+	<select id="getStudentMapList" resultType="map" databaseId="mysql">
+		 select id,name,age from student where id=#{id}
+	</select>
+	<!-- public Map<String,Object> getStudentMap(int id); -->
+	<select id="getStudentMap" resultType="map" databaseId="mysql">
+		 select id,name,age from student where id=#{id}
+	</select>
+	
+	<!-- public Map<String, Student> getStudentReturnMap(String name); -->
+	<select id="getStudentReturnMap" resultType="stus" databaseId="mysql">
+ 		select id,name,age from student where name like #{name}
+	</select>
+	<!--public List<Student> getStudentListByLastName(String lastName); -->
+	<select id="getStudentListByLastName" resultType="stus" databaseId="mysql">
+		  select id,name,age from student where name like #{lastName} 
+	</select>
+	
+	<!--
+			namespace：命名空间，指定为接口IStudent
+			id:唯一标识，通过namespace指定为接口之后，下面的select 的id指定为接口下面的方法：getStudentById，就该这两处，到test出进行测试即可；
+			resultType:结果的返回值类型
+			#{id}：传入的id参数
+	 -->
+ 	<!--  <select id="selectStudent" resultType="cn.lip.mybatis.bean.Student"> -->
+  <select id="getStudentById" resultType="stus"  databaseId="mysql">
+    select id,name,age from student where id = #{ccc}
+  </select>
+  <!--  
+		  	单个参数：mybatis不会做特殊处理，
+			#{参数名/任意名}：取出参数值。
+			
+		多个参数：mybatis会做特殊处理。
+			多个参数会被封装成 一个map，
+				key：param1...paramN,或者参数的索引也可以
+				value：传入的参数值
+			#{}就是从map中获取指定的key的值；
+			
+			异常：
+			org.apache.ibatis.binding.BindingException: 
+			Parameter 'id' not found. 
+			Available parameters are [1, 0, param1, param2]
+			操作：
+				方法：public Employee getEmpByIdAndLastName(Integer id,String lastName);
+				取值：#{id},#{lastName}
+		
+		【命名参数】：明确指定封装参数时map的key；@Param("id")
+			多个参数会被封装成 一个map，
+				key：使用@Param注解指定的值
+				value：参数值
+			#{指定的key}取出对应的参数值
+  -->
+  <select id="getStudentByIdAndName" resultType="stus"  databaseId="mysql">
+    select id,name,age from student where id = #{id} and name=#{name}
+  </select>
+
+
+   <select id="getStudentById" resultType="stus"  databaseId="oracle">
+    select empno as id,ename as name,mgr as age from emp where empno=#{id}
+  </select>
+  <!-- 
+  	public void addStu(Student student);
+	public void updateStu(Student student);
+	public void deleteStu(Integer id);
+   -->
+   <!-- 
+   		获取自增主键的值的方法：mybatis和原始的jdbc方法一样，也是用的statement.getGeneratedKeys();
+   		useGeneratedKeys="true":使用自增获取主键值策略
+   		keyProperty:指定对应主键值属性，也就是mybatis获取到主键之后，将这个值封装到java bean的哪个属性
+   		
+    -->
+  <insert id="addStu" parameterType="cn.lip.mybatis.bean.Student" databaseId="mysql" 
+  		useGeneratedKeys="true" keyProperty="id">
+   	insert into student (id,name,age) values(null,#{name},#{age})
+  </insert>
+  
+  <insert id="addStu" parameterType="cn.lip.mybatis.bean.Student" databaseId="oracle">
+		<!-- 
+			keyProperty:查出的主键值封装给javaBean的哪个属性
+			order="BEFORE":当前sql在插入sql之前运行
+				   AFTER：当前sql在插入sql之后运行
+			resultType:查出的数据的返回值类型
+			
+			BEFORE运行顺序：
+				先运行selectKey查询id的sql；查出id值封装给javaBean的id属性
+				在运行插入的sql；就可以取出id属性对应的值
+			AFTER运行顺序：
+				先运行插入的sql（从序列中取出新值作为id）；
+				再运行selectKey查询id的sql；
+			 -->
+		<selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+			select  emp_sequence.nextval from dual <!-- 查询表emp的下个主键的值  -->
+		</selectKey>	
+		<!--  通过上面selectKey得到bean的下一个主键的值，放到下面的sql的#{id}中
+		empno as id,ename as name,mgr as age
+		-->
+		    insert into emp (empno,ename,mgr) values (#{id},#{name<!-- ,jdbcType=NULL -->},#{age})
+	</insert>
+ 
+	 <!--  public boolean updateStu(Student student); -->
+	  <update id="updateStu" databaseId="mysql" parameterType="cn.lip.mybatis.bean.Student" >
+	  	update student set name=#{name},age=#{age} where id=#{id}
+	  </update>
+
+	<!-- public boolean deleteStu(Integer id); -->
+	  <delete id="deleteStu" databaseId="mysql">
+	  	delete from  student where id=#{id}
+	  </delete>
+</mapper>
