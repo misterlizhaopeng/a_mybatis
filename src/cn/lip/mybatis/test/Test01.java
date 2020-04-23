@@ -2,6 +2,7 @@ package cn.lip.mybatis.test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -201,4 +202,27 @@ public class Test01 {
 
 		openSession.close();
 	}
+	
+	
+	
+	@Test
+	public void testStatementType() throws IOException{
+		
+		SqlSessionFactory sqlSessionFactory =getSqlSessionFactory();
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		
+		IStudentMapper studentMapper = sqlSession.getMapper(IStudentMapper.class);
+		Map<String, Object> map=new HashMap<>();
+		map.put("table", "student");
+		map.put("id", "61088");
+		map.put("value", "'student-value'");
+		map.put("a", "name");
+		//update ${table} set ${a}=${value} where id=${id}
+		boolean updateTb = studentMapper.updateTb(map);
+		System.out.println(updateTb);
+		sqlSession.commit();
+		sqlSession.close();
+	}
+	
+	
 }

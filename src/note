@@ -1,3 +1,49 @@
 ori/oriMY
 ori:https://github.com/misterlizhaopeng/a_mybatis.git
 oriMY:https://gitee.com/gogoFirstgo/a_mybatis.git
+
+mybatis中的关键字：
+
+	parameterType;
+	useGeneratedKeys;
+	selectKey;
+	resultType;
+	keyProperty;
+	databaseId;
+	@MapKey;
+	
+	resultMap;
+	id;
+	result (column/property);
+	association;
+	javaType;
+	collectioin;
+	ofType;
+
+
+
+resultType 小总结：
+返回类型:List<obj>  ->xml:resultType:obj;
+返回类型:List<Map<,>> or Map<,>  ->xml:resultType:map;
+
+resultMap和resultType互斥，只能选择其中一个;
+
+resultMap:
+级联属性、association嵌套查询(association、javaType)、association的分步查询(association、select)、懒加载、以及bean序列化；
+
+collection嵌套查询（collection、ofType）、collection的分步查询（collection、select）、懒加载;
+
+
+
+
+statementType="STATEMENT解释(非预编译)：
+<!-- public boolean updateTb(Map<String,Object> map); -->
+	<update id="updateTb" parameterType="map" statementType="STATEMENT">
+		update ${table} set ${a}=${value} where id=${id}
+	</update>
+statementType （可选配置，默认配置为PREPARED）
+        STATEMENT，PREPARED 或 CALLABLE 的一个。这会让 MyBatis 分别使用 Statement，PreparedStatement 或 CallableStatement，默认值：PREPARED;
+
+
+
+

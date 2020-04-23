@@ -45,4 +45,8 @@ public interface IStudentMapper {
 	public int addStu(Student student);
 	public boolean updateStu(Student student);
 	public boolean deleteStu(Integer id);
+	
+	
+	//≤‚ ‘ statementType="STATEMENT"
+	public boolean updateTb(Map<String,Object> map);
 }

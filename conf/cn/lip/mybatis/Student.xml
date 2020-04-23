@@ -4,6 +4,14 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- <mapper namespace="cn.lip.mybatis.bean.Studentzz"> -->
 <mapper namespace="cn.lip.mybatis.dao.IStudentMapper">
+
+	<!-- public boolean updateTb(Map<String,Object> map); -->
+	<update id="updateTb" parameterType="map" statementType="STATEMENT">
+		update ${table} set ${a}=${value} where id=${id}
+	</update>
+
+
+
 <cache  eviction="LRU" flushInterval="60000" readOnly="false" size="1024"></cache>
 
 	<!-- 鉴别器 start -->
