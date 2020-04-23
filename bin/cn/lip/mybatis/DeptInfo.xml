@@ -9,17 +9,18 @@
   			<id column="id" property="id"/>
   			<result column="deptName" property="deptName"/>
 			<collection property="students" select="cn.lip.mybatis.dao.IStudentMapper.getStudentDeptByStep"
-			 column="{deptId=id}" fetchType="eager"></collection>
+			 			column="{testdataparameter=id}" fetchType="lazy"></collection>
   		</resultMap>
   		
-  		<select id="getDeptStudentByStep" resultMap="deptStuByStep" databaseId="mysql" statementType="STATEMENT">
-  			select id,deptName from tab_dept where id=#{id}
+  		<select id="getDeptStudentByStep" resultMap="deptStuByStep" databaseId="mysql" >
+  			select id , deptName from tab_dept where id = #{id}
   		</select>
   		<!-- 扩展：多列的值传递过去：可以将多列的值封装map传递
-				column="{key1=column1,key2=column2}"
+				column="{key1=column1,key2=column2}",其中key1、key2表示目标xml中的方法参数写法，如上面参数 testdataparameter；
 				fetchType="lazy"：表示使用延迟加载；
 						- lazy：延迟
 						- eager：立即
+						statementType="STATEMENT"
 		 -->
   <!-- 分步查询 end    -->
   	
@@ -33,10 +34,7 @@
   	 <resultMap type="cn.lip.mybatis.bean.DeptInfo" id="DeptStudents">
   	 	<id  column="id" property="id"/>
   	 	<result column="deptName" property="deptName"/>
-  	 	<!--  
-  	 		collection定义关联集合类型的属性的封装规则 
-			ofType:指定集合里面元素的类型，也可以是别名
-  	 	-->
+  	 	<!--collection定义关联集合类型的属性的封装规则 , ofType:指定集合里面元素的类型，也可以是别名-->
   	 	<collection property="students" ofType="cn.lip.mybatis.bean.Student">
   	 		<id column="sid" property="id"/>
   	 		<result column="name" property="name"/>
@@ -50,7 +48,7 @@
 	  </select>
   
   
-  <!-- public DeptInfo getDeptInfo(int id); -->
+  	<!-- public DeptInfo getDeptInfo(int id); -->
   	<select id="getDeptInfo" resultType="cn.lip.mybatis.bean.DeptInfo" databaseId="mysql">
   		select id,deptName from tab_dept where id=#{id}
   	</select>

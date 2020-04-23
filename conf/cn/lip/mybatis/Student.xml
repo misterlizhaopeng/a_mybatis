@@ -25,7 +25,7 @@
 
 	<!--public StudentSecond getStudentDeptByStep(int deptId);  -->
 	<select id="getStudentDeptByStep" resultType="cn.lip.mybatis.bean.StudentSecond" databaseId="mysql">
-		select id,name,age from student where deptId=#{deptId}
+		select id,name,age from student where deptId=#{testdataparameter}
 	</select>
 
 <!--resultMap 分步查询  start  -->
@@ -60,8 +60,7 @@
 		<id column="id" property="id"/>
 		<result column="name" property="name"/>
 		<result column="age" property="age"/>
-		
-		<!-- property:指定javabean的级联的属性，javaType:为指定的javabean类型的全名 -->
+		<!--javaType:为指定的javabean类型的全名 -->
 		<association property="deptInfo" javaType="cn.lip.mybatis.bean.DeptInfo" >
 			<!--定义主键  -->
 			<id column="deptId" property="id"/>
@@ -70,7 +69,7 @@
 		
 	</resultMap>
 	<!-- public StudentSecond getCascResult(Integer id); -->
-	<select id="getCascResult" databaseId="mysql" resultMap="cascFirst" >
+	<select id="getCascResult" databaseId="mysql" resultMap="cascFirst2" >
 		select a.id,a.name,a.age,b.id deptId,b.deptName from 
 		student a  left join tab_dept b on a.deptid =b.id 
 		where a.id=#{id}

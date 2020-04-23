@@ -164,6 +164,31 @@ public class Test01 {
 		sqlSession.close();
 	}
 
+	// collection-ofType
+	@Test
+	public void collection_ofType() throws IOException{
+		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+		SqlSession openSession = sqlSessionFactory.openSession();
+		IDeptInfoMapper deptInfoMapper = openSession.getMapper(IDeptInfoMapper.class);
+		DeptInfo deptStudent = deptInfoMapper.getDeptStudent(3);
+		System.err.println(deptStudent);
+		
+		openSession.close();
+	}
+	
+	
+	// collection-select
+	@Test 
+	public void collection_select() throws IOException{
+		SqlSessionFactory sqlSessionFactory =getSqlSessionFactory();
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		IDeptInfoMapper deptInfoMapper = sqlSession.getMapper(IDeptInfoMapper.class);
+		DeptInfo deptStudentByStep = deptInfoMapper.getDeptStudentByStep(3);
+		System.err.println(deptStudentByStep.getDeptName());
+		//fetchType=lazy:只获取部门名称时候，学生信息不回获取；如果 fetchType=eager的时候，学生信息会同时获取；
+		sqlSession.close();
+	}
+	
 	@Test
 	public void selectCasResult() throws IOException {
 		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
@@ -174,13 +199,6 @@ public class Test01 {
 		System.out.println(cascResult);
 		System.out.println(cascResult.getDeptInfo());
 
-		IDeptInfoMapper mapper2 = openSession.getMapper(IDeptInfoMapper.class);
-		DeptInfo deptStudent = mapper2.getDeptStudent(3);
-		System.err.println(deptStudent);
-
-		IDeptInfoMapper mapper3 = openSession.getMapper(IDeptInfoMapper.class);
-		DeptInfo deptStudentByStep = mapper3.getDeptStudentByStep(3);
-		System.err.println(deptStudentByStep);
 		openSession.close();
 	}
 }
