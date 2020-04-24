@@ -41,6 +41,7 @@ public interface IStudentMapper {
 	public Map<String,Object> getStudentMap(int id);
 	public List<Student> getStudentListByLastName(String lastName);
 	public Student getStudentByIdAndName(@Param("id") int id, @Param("name") String name);
+	//public Student getStudentByIdAndName(int id, String name);
 	public Student getStudentById(Integer id);
 	public int addStu(Student student);
 	public boolean updateStu(Student student);

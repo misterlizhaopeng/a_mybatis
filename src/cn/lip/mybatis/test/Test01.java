@@ -193,15 +193,34 @@ public class Test01 {
 	@Test
 	public void selectCasResult() throws IOException {
 		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
-		SqlSession openSession = sqlSessionFactory.openSession();
-		IStudentMapper mapper = openSession.getMapper(IStudentMapper.class);
-
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		//´«Í³SQLSession£º
+//		sqlSession.select(null, null);//void
+//		sqlSession.selectList(null);//List
+//		sqlSession.update(null);//int
+		sqlSession.clearCache();
+		
+		IStudentMapper mapper = sqlSession.getMapper(IStudentMapper.class);
 		StudentSecond cascResult = mapper.getCascResult(2);
 		System.out.println(cascResult);
-		System.out.println(cascResult.getDeptInfo());
+		//System.out.println(cascResult.getDeptInfo());
+		sqlSession.close();
+		
+		SqlSession sqlSession2 = sqlSessionFactory.openSession();
+		IStudentMapper mapper2 = sqlSession2.getMapper(IStudentMapper.class);
+		StudentSecond cascResult2 = mapper2.getCascResult(2);
+		System.out.println(cascResult2);
+		
+		System.out.println(cascResult == cascResult2);
+		//System.out.println(cascResult2.getDeptInfo());
+		sqlSession.close();
+		
+		
+		
+		
 
-		openSession.close();
-	}
+		
+	} 
 	
 	
 	
