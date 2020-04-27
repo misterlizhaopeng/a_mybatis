@@ -11,6 +11,7 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import cn.lip.mybatis.bean.DeptInfo;
@@ -190,8 +191,37 @@ public class Test01 {
 		sqlSession.close();
 	}
 	
+	
+	@Test
+	public void resolveMybatisFramework() throws IOException {
+		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		IStudentMapper studentMapper = sqlSession.getMapper(IStudentMapper.class);
+		Student student = studentMapper.getStudentByIdAndName(2, "lp");
+		System.out.println(student);
+		sqlSession.close();
+		
+		SqlSession sqlSession2 = sqlSessionFactory.openSession();
+		IStudentMapper studentMapper2 = sqlSession2.getMapper(IStudentMapper.class);
+		
+		//未开启二级缓存<setting name="cacheEnabled" value="false"/>，此时SqlSession中的executor=SimpleExecutor，测试一级缓存，具体实现在方法中：BaseExecutor.query(...)
+		Student student2 = studentMapper2.getStudentByIdAndName(2, "lp");
+		System.out.println(student2);
+		
+		//未开启二级缓存<setting name="cacheEnabled" value="false"/>，此时SqlSession中的executor=SimpleExecutor，测试一级缓存，具体实现在方法中：BaseExecutor.query(...)
+		Student student3 = studentMapper2.getStudentByIdAndName(2, "lp");
+		System.out.println(student3);
+		sqlSession.close();
+	}
+	
 	@Test
 	public void selectCasResult() throws IOException {
+		Logger log=Logger.getLogger(Test01.class);
+		
+		
+		
+		
+		
 		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		//传统SQLSession：

@@ -28,6 +28,16 @@
 		<!-- 个人建议，对于sql映射文件下面的 resultType还是起全名比较好，因为当维护一个pojo的resultType时，可以通过鼠标点击到指定的类 -->
 		<package name="cn.lip.mybatis.bean" />
 	</typeAliases>
+	
+	<!-- 插件开发 -->
+	<plugins>
+		<plugin interceptor="cn.lip.mybatis.plugin.TestPlugin">
+			<property name="name" value="root"/>
+			<property name="pwd" value="root"/>
+			<property name="value" value="root-value"/>
+		</plugin>
+	</plugins>
+	
 	<environments default="dev_mysql">
 		<!-- envirnoments:设置多个环境，让default指定具体开发环境，对应environment的id； environment:为具体的环境，必须具有两个标签：transactionManager，dataSource; 
 			针对transactionManager的type和dataSource的type都是mybatis框架起的别名 -->
@@ -58,8 +68,6 @@
 		<property name="SQL Server" value="sqlserver" />
 	</databaseIdProvider>
 
-
-
 	<!-- 将sql映射文件 注册到全局配置中 -->
 	<mappers>
 		<!-- mapper:注册一个sql映射：
@@ -80,4 +88,5 @@
 		<!-- 批量注册： -->
 		<!-- <package name="com.lp.mybatis.dao"/> -->
 	</mappers>
+	
 </configuration>
