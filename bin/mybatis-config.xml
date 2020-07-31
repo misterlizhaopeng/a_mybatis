@@ -14,8 +14,8 @@
 		<setting name="lazyLoadingEnabled" value="true" />
 		<setting name="aggressiveLazyLoading" value="false" />
 		
-		<!-- 1.开启mybatis二级缓存 -->
-		<setting name="cacheEnabled" value="true"/>
+		<!-- 1.开启mybatis二级缓存，默认是开启的 -->
+		<!-- <setting name="cacheEnabled" value="false"/> -->
 		
 	</settings>
 

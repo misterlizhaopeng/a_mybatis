@@ -5,7 +5,7 @@
 <!-- <mapper namespace="cn.lip.mybatis.bean.Studentzz"> -->
 <mapper namespace="cn.lip.mybatis.dao.IStudentMapper">
 
-	<cache eviction="LRU" flushInterval="60000" readOnly="false" size="1024"></cache>
+	<!-- <cache eviction="LRU" flushInterval="60000" readOnly="false" size="1024"></cache> -->
 	
 	<!-- public boolean updateTb(Map<String,Object> map); -->
 	<update id="updateTb" parameterType="map" statementType="STATEMENT">

@@ -53,7 +53,19 @@ public class Test01 {
 		System.err.println(iStudent.getStudentById(1));
 		session.close();
 	}
-
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	@Test
 	public void helloworldAnnotation() throws IOException {
 		// SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
